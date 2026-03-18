@@ -1,0 +1,12 @@
+spring:
+    application:
+        name: Smart Grocery Finder
+    datasource:
+        password: Mouni2002@
+        url: jdbc:mysql://localhost:3306/grocery_db?createDatabaseIfNotExist=true
+        username: root
+    flyway:
+        enabled: false
+    jpa:
+        hibernate:
+            ddl-auto: none
