@@ -7,6 +7,16 @@ spring:
         username: root
     flyway:
         enabled: false
+        clean-disabled: false
     jpa:
         hibernate:
             ddl-auto: none
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+    endpoint:
+        health:
+            show-details: always
