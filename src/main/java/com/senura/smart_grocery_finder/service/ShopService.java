@@ -7,7 +7,10 @@ import com.senura.smart_grocery_finder.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +45,7 @@ public class ShopService {
         shopRepository.save(shop);
     }
 
+    // Basic one
     public RecommendResponse recommend(RecommendRequest request) {
         List<Shop> allShops = shopRepository.findAll();
 
@@ -69,11 +73,83 @@ public class ShopService {
             }
         }
 
-        if (bestShop == null) {
-            throw new ResourceNotFoundException("No shops available for the given items");
+        if (bestShop == null || bestMatchCount == 0) {
+            throw new ResourceNotFoundException("No shops have the requested items");
         }
 
-        return new RecommendResponse(bestShop.getName(), bestMatchCount, bestDistance);
+        return new RecommendResponse(
+                bestShop.getName(),
+                bestMatchCount,
+                roundDistance(bestDistance));
+    }
+
+    // Advanced algo
+    public List<RecommendResponse> recommendAdvanced(RecommendRequest request) {
+
+        List<Shop> allShops = shopRepository.findAll();
+        List<String> remainingItems = new ArrayList<>(request.getItems());
+        List<RecommendResponse> recommendations = new ArrayList<>();
+
+        while (!remainingItems.isEmpty()) {
+
+            Shop bestShop = null;
+            List<String> matchedItemsInBestShop = new ArrayList<>();
+            double bestDistance = Double.MAX_VALUE;
+
+            for (Shop shop : allShops) {
+
+                List<String> matchedItems = shop.getItems().stream()
+                        .map(Item::getName)
+                        .filter(item ->
+                                remainingItems.stream()
+                                        .anyMatch(r -> r.equalsIgnoreCase(item)))
+                        .distinct()
+                        .toList();
+
+                if (matchedItems.isEmpty()) {
+                    continue;
+                }
+
+                double distance = calculateDistance(
+                        request.getUserX(),
+                        request.getUserY(),
+                        shop.getXCoordinate(),
+                        shop.getYCoordinate()
+                );
+
+                if (matchedItems.size() > matchedItemsInBestShop.size() ||
+                        (matchedItems.size() == matchedItemsInBestShop.size() && distance < bestDistance)) {
+
+                    bestShop = shop;
+                    matchedItemsInBestShop = matchedItems;
+                    bestDistance = distance;
+                }
+            }
+
+            if (bestShop == null) {
+                break;
+            }
+
+            recommendations.add(
+                    new RecommendResponse(
+                            bestShop.getName(),
+                            matchedItemsInBestShop.size(),
+                            roundDistance(bestDistance)
+                    )
+            );
+
+            // remove matched items
+            matchedItemsInBestShop.forEach(item ->
+                    remainingItems.removeIf(r -> r.equalsIgnoreCase(item)));
+
+            allShops.remove(bestShop);
+        }
+
+        if (recommendations.isEmpty()) {
+            throw new ResourceNotFoundException("No shops available for the requested items");
+        }
+
+        return recommendations;
     }
 
 
@@ -92,6 +168,12 @@ public class ShopService {
     // --- Helper: Euclidean distance formula ---
     private double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
+    private double roundDistance(double distance) {
+        return new BigDecimal(distance)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 
 
