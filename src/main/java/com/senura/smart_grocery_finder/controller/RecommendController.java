@@ -20,7 +20,9 @@ public class RecommendController {
         this.shopService = shopService;
     }
 
-    // POST /recommend — get best shop recommendation
+    // POST /recommend — get best shop recommendation (two methods)
+
+
     // Basic recommendation
     @PostMapping
     public ResponseEntity<RecommendResponse> recommend(@Valid @RequestBody RecommendRequest request) {

@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    // Optional: handle generic exceptions
+    // handle generic exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> body = new HashMap<>();

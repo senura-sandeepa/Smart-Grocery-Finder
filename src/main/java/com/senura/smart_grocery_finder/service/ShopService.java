@@ -57,7 +57,7 @@ public class ShopService {
             // Count how many requested items this shop has
             int matchCount = countMatchingItems(shop, request.getItems());
 
-            // Calculate straight-line distance from user to shop
+            // Calculate straight line distance from user to shop
             double distance = calculateDistance(
                     request.getUserX(), request.getUserY(),
                     shop.getXCoordinate(), shop.getYCoordinate()
@@ -83,20 +83,25 @@ public class ShopService {
                 roundDistance(bestDistance));
     }
 
-    // Advanced algo
+
+    //advanced algo new 2
     public List<RecommendResponse> recommendAdvanced(RecommendRequest request) {
 
-        List<Shop> allShops = shopRepository.findAll();
+        List<Shop> availableShops = new ArrayList<>(shopRepository.findAll());
         List<String> remainingItems = new ArrayList<>(request.getItems());
         List<RecommendResponse> recommendations = new ArrayList<>();
 
+        double currentX = request.getUserX();
+        double currentY = request.getUserY();
+        double cumulativeDistance = 0.0;
+
         while (!remainingItems.isEmpty()) {
 
-            Shop bestShop = null;
-            List<String> matchedItemsInBestShop = new ArrayList<>();
-            double bestDistance = Double.MAX_VALUE;
+            Shop nearestShop = null;
+            List<String> matchedItemsInShop = new ArrayList<>();
+            double nearestDistance = Double.MAX_VALUE;
 
-            for (Shop shop : allShops) {
+            for (Shop shop : availableShops) {
 
                 List<String> matchedItems = shop.getItems().stream()
                         .map(Item::getName)
@@ -106,43 +111,47 @@ public class ShopService {
                         .distinct()
                         .toList();
 
-                if (matchedItems.isEmpty()) {
-                    continue;
-                }
+                if (matchedItems.isEmpty()) continue;
 
                 double distance = calculateDistance(
-                        request.getUserX(),
-                        request.getUserY(),
+                        currentX,
+                        currentY,
                         shop.getXCoordinate(),
                         shop.getYCoordinate()
                 );
 
-                if (matchedItems.size() > matchedItemsInBestShop.size() ||
-                        (matchedItems.size() == matchedItemsInBestShop.size() && distance < bestDistance)) {
-
-                    bestShop = shop;
-                    matchedItemsInBestShop = matchedItems;
-                    bestDistance = distance;
+                if (distance < nearestDistance) {
+                    nearestShop = shop;
+                    nearestDistance = distance;
+                    matchedItemsInShop = matchedItems;
                 }
             }
 
-            if (bestShop == null) {
+            if (nearestShop == null) {
                 break;
             }
 
+            cumulativeDistance += nearestDistance;
+
             recommendations.add(
                     new RecommendResponse(
-                            bestShop.getName(),
-                            matchedItemsInBestShop.size(),
-                            roundDistance(bestDistance)
+                            nearestShop.getName(),
+                            matchedItemsInShop.size(),
+                            roundDistance(nearestDistance),
+                            roundDistance(cumulativeDistance)
                     )
             );
 
-            // remove matched items
-            matchedItemsInBestShop.forEach(item ->
+            // remove purchased items
+            matchedItemsInShop.forEach(item ->
                     remainingItems.removeIf(r -> r.equalsIgnoreCase(item)));
 
-            allShops.remove(bestShop);
+            // move to this shop
+            currentX = nearestShop.getXCoordinate();
+            currentY = nearestShop.getYCoordinate();
+
+            // remove shop from future search
+            availableShops.remove(nearestShop);
         }
 
         if (recommendations.isEmpty()) {
@@ -153,6 +162,7 @@ public class ShopService {
     }
 
 
+    // count matching items
     private int countMatchingItems(Shop shop, List<String> requestedItems) {
         int count = 0;
         for (Item shopItem : shop.getItems()) {
@@ -165,11 +175,13 @@ public class ShopService {
         return count;
     }
 
-    // --- Helper: Euclidean distance formula ---
+    // Distance formula
     private double calculateDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
+
+    // rounding distance to 2 decimal places
     private double roundDistance(double distance) {
         return new BigDecimal(distance)
                 .setScale(2, RoundingMode.HALF_UP)
