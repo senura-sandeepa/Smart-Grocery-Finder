@@ -2,15 +2,15 @@ spring:
     application:
         name: Smart Grocery Finder
     datasource:
-        password: Mouni2002@
-        url: jdbc:mysql://localhost:3306/grocery_db?createDatabaseIfNotExist=true
-        username: root
+        url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/grocery_db?createDatabaseIfNotExist=true}
+        username: ${SPRING_DATASOURCE_USERNAME:root}
+        password: ${SPRING_DATASOURCE_PASSWORD:Mouni2002@}
     flyway:
-        enabled: false
+        enabled: ${SPRING_FLYWAY_ENABLED:false}
         clean-disabled: false
     jpa:
         hibernate:
-            ddl-auto: none
+            ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
 
 management:
     endpoints:
@@ -20,3 +20,29 @@ management:
     endpoint:
         health:
             show-details: always
+
+
+
+
+#spring:
+#    application:
+#        name: Smart Grocery Finder
+#    datasource:
+#        password: Mouni2002@
+#        url: jdbc:mysql://localhost:3306/grocery_db?createDatabaseIfNotExist=true
+#        username: root
+#    flyway:
+#        enabled: false
+#        clean-disabled: false
+#    jpa:
+#        hibernate:
+#            ddl-auto: none
+#
+#management:
+#    endpoints:
+#        web:
+#            exposure:
+#                include: "*"
+#    endpoint:
+#        health:
+#            show-details: always

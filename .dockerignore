@@ -1,0 +1,16 @@
+# Git
+.git/
+
+# Maven
+target/
+.mvn/
+mvnw
+mvnw.cmd
+
+# Tests (not needed in production image)
+src/test/
+
+# Docker files (not needed inside image)
+Dockerfile
+.dockerignore
+docker-compose.yml
