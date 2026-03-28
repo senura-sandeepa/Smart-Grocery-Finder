@@ -1,8 +1,8 @@
 :root {
   --white:#fff; --bg:#f4f6f1; --bg2:#eaede5; --surface:#fff; --surface2:#f7f9f4;
   --border:#dde3d6; --border2:#ccd5c2;
-  --g50:#f0faf3; --g100:#d4f2de; --g200:#a4e4bc; --g300:#5cc98a;
-  --g400:#2da653; --g500:#1e8a40; --g600:#166332;
+  --g50:#f0faf3; --g100:#d4f2de; --g200:#a4e4bc; --g300:#4ade80;
+  --g400:#22c55e; --g500:#16a34a; --g600:#166332;
   --orange:#f97316; --orange-lt:#fff4ed;
   --blue:#3b82f6; --blue-lt:#eff6ff; --blue-dark:#1d4ed8;
   --red:#ef4444; --red-lt:#fef2f2;
@@ -215,18 +215,171 @@ hr{border:none;border-top:1px solid var(--border);margin:10px 0}
 .step-detail{font-size:11px;color:var(--t400);font-family:var(--mono);margin-top:1px}
 .step-dist{font-size:10px;color:var(--t300);margin-top:2px}
 
+/* ══════════════════════════════════════════
+   TABLET (max 900px)
+══════════════════════════════════════════ */
 @media(max-width:900px){
-  :root{--sidebar:180px}
+  :root{ --sidebar:180px }
 }
+
+/* ══════════════════════════════════════════
+   MOBILE (max 768px)
+══════════════════════════════════════════ */
 @media(max-width:768px){
-  html,body{height:auto;overflow:auto}
-  .shell{grid-template-columns:1fr;grid-template-areas:"hd""mn";height:auto;overflow:visible}
-  main{height:auto;overflow:visible;padding:12px}
-  aside{display:none}
-  .panel.active{height:auto;display:block}
-  .panel-scroll{overflow:visible;height:auto}
-  .map-outer{height:300px}
-  .map-vp{height:100%}
-  .bkt-layout{grid-template-columns:1fr}
-  .fg2,.fg3{grid-template-columns:1fr}
+
+  /* ── Base ── */
+  html,body{ height:auto; overflow:auto; }
+
+  /* ── Shell: no sidebar, add bottom nav space ── */
+  .shell{
+    grid-template-columns:1fr;
+    grid-template-areas:"hd""mn";
+    height:auto;
+    overflow:visible;
+    padding-bottom:64px; /* space for bottom nav */
+  }
+
+  /* ── Header ── */
+  header{ padding:0 12px; gap:8px; }
+  .hdr-sub{ display:none; }
+  .api-pill{ font-size:9px; padding:2px 8px; }
+  .hdr-title{ font-size:12px; }
+
+  /* ── Hide sidebar ── */
+  aside{ display:none; }
+
+  /* ── Main ── */
+  main{
+    height:auto;
+    overflow:visible;
+    padding:12px 10px 16px;
+  }
+
+  /* ── Panels ── */
+  .panel.active{ height:auto; display:block; }
+  .panel-scroll{ overflow:visible; height:auto; }
+
+  /* ── Cards ── */
+  .card{ padding:10px 12px; margin-bottom:8px; }
+
+  /* ── Forms ── */
+  .fg2,.fg3,.fga{ grid-template-columns:1fr; }
+  .fg2 .field:last-child,
+  .fga .field:last-child{ margin-top:0; }
+
+  /* ── Tables: horizontal scroll ── */
+  .tbl-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table{ min-width:380px; }
+  th,td{ padding:6px 8px; font-size:11px; }
+
+  /* ── Map ── */
+  .map-outer{ height:320px; min-height:320px; }
+  .map-vp{ height:100%; }
+  .map-foot{
+    flex-wrap:wrap;
+    gap:6px;
+    padding:6px 10px;
+    font-size:9px;
+  }
+  .map-hint{ display:none; }
+  .map-coord-pill{ font-size:9px; padding:2px 6px; }
+
+  /* ── Bucket layout: stack vertically ── */
+  .bkt-layout{
+    grid-template-columns:1fr;
+    gap:8px;
+    flex:none;
+  }
+  .bkt-col .card{ margin-bottom:0; }
+  .chips-grid{ grid-template-columns:1fr 1fr; gap:4px; }
+
+  /* ── Recommend buttons ── */
+  .btn-row{ flex-direction:column; }
+  .btn-row .btn{ width:100%; justify-content:center; }
+
+  /* ── Page header ── */
+  .pg-title{ font-size:15px; }
+  .pg-sub{ flex-wrap:wrap; gap:3px; }
+  .rc{ font-size:9px; }
+
+  /* ── Rec results ── */
+  .rec-name{ font-size:16px; }
+  .adv-card{ padding:8px 10px; }
+
+  /* ══════════════════════════════════════
+     BOTTOM NAVIGATION BAR
+  ══════════════════════════════════════ */
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0; left:0; right:0;
+    height:60px;
+    background:white;
+    border-top:1px solid var(--border);
+    box-shadow:0 -4px 16px rgba(20,40,10,.08);
+    z-index:500;
+    align-items:stretch;
+  }
+  .mn-btn{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    border:none;
+    background:transparent;
+    font-family:var(--font);
+    font-size:9px;
+    font-weight:600;
+    color:var(--t400);
+    cursor:pointer;
+    padding:6px 4px;
+    transition:color .12s, background .12s;
+    position:relative;
+  }
+  .mn-btn:hover{ background:var(--bg); }
+  .mn-btn.active{
+    color:var(--g500);
+    background:var(--g50);
+  }
+  .mn-btn svg{ width:20px; height:20px; flex-shrink:0; display:block; stroke:currentColor; }
+  .mn-badge{
+    position:absolute;
+    top:6px; right:calc(50% - 14px);
+    background:var(--g400);
+    color:white;
+    font-size:8px;
+    font-weight:700;
+    padding:1px 4px;
+    border-radius:99px;
+    min-width:14px;
+    text-align:center;
+    display:none;
+  }
+  .mn-badge.show{ display:block; }
+
+  /* ── Toast position on mobile ── */
+  #toasts{
+    bottom:70px;
+    right:10px;
+    left:10px;
+  }
+  .toast{ max-width:100%; }
+}
+
+/* Hide bottom nav on desktop by default */
+.mobile-nav{ display:none; }
+
+@media(max-width:768px){
+  /* Show bottom nav on mobile */
+  .mobile-nav{ display:flex; }
+
+  #panel-map{
+    min-height:auto;
+    padding-bottom:0;
+  }
+  body{ min-height:100vh; }
+  .panel.active{ min-height:auto; }
+  .map-outer{ height:calc(100vh - 240px); min-height:300px; }
 }

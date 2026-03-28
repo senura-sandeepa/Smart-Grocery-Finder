@@ -39,8 +39,10 @@ function confirmCancel() {
 function nav(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.mn-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  document.querySelector(`[data-panel="${name}"]`).classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`)?.classList.add('active');
+  document.querySelectorAll(`[data-panel="${name}"]`).forEach(b => b.classList.add('active'));
   if (name === 'map') {
     if (allShops.length > 0) { renderMap(); }
     else { loadShopsOnMap(); }
@@ -88,8 +90,13 @@ async function api(path, opts={}) {
 /* ═══════════════════════ BADGES ═══════════════════════ */
 function setBadge(id, n) {
   const el = document.getElementById('badge-'+id);
-  if (!el) return;
-  if (n>0){el.textContent=n;el.classList.add('show');}else el.classList.remove('show');
+  const mel = document.getElementById('mn-badge-'+id);
+  if (el) {
+    if (n>0){el.textContent=n;el.classList.add('show');}else el.classList.remove('show');
+  }
+  if (mel) {
+    if (n>0){mel.textContent=n;mel.classList.add('show');}else mel.classList.remove('show');
+  }
 }
 
 /* ═══════════════════════ ITEMS ═══════════════════════ */

@@ -395,6 +395,35 @@
 
     </main>
 </div>
+
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<nav class="mobile-nav">
+    <button class="mn-btn active" onclick="nav('map')" data-panel="map">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+        Map
+    </button>
+    <button class="mn-btn" onclick="nav('items')" data-panel="items">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Items
+        <span class="mn-badge" id="mn-badge-items"></span>
+    </button>
+    <button class="mn-btn" onclick="nav('shops')" data-panel="shops">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Shops
+        <span class="mn-badge" id="mn-badge-shops"></span>
+    </button>
+    <button class="mn-btn" onclick="nav('bucket')" data-panel="bucket">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Bucket
+        <span class="mn-badge" id="mn-badge-bucket"></span>
+    </button>
+    <button class="mn-btn" onclick="nav('recommend')" data-panel="recommend">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Find
+    </button>
+</nav>
+
 <div id="toasts"></div>
 
 <script src="app.js"></script>
