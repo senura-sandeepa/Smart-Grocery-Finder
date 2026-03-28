@@ -1,5 +1,9 @@
 /* ═══════════════════════ CONFIG ═══════════════════════ */
-const BASE = 'http://localhost:8080';
+// const BASE = 'http://localhost:8080';
+
+const BASE = window.location.hostname === 'localhost'
+    ? 'http://localhost:8080'
+    : 'https://smart-grocery-finder-production.up.railway.app';
 
 /* ═══════════════════════ STATE ═══════════════════════ */
 let allItems  = [];
