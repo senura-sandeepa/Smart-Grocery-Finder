@@ -110,6 +110,18 @@ async function loadShops() {
   catch(e){ toast('Could not load shops: '+e.message,'error'); }
   finally { ld.classList.remove('show'); }
 }
+
+async function deleteShop(id, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
+  try {
+    await api(`/shops/${id}`, {method:'DELETE'});
+    toast(`"${name}" deleted`, 'success');
+    await loadShops();
+    renderMap();
+  }
+  catch(e){ toast('Delete failed: '+e.message, 'error'); }
+}
+
 function renderShopsTable() {
   const tb=document.getElementById('shops-tbody');
   if (!allShops.length){ tb.innerHTML='<tr class="empty-row"><td colspan="5">No shops yet.</td></tr>'; return; }
@@ -119,10 +131,16 @@ function renderShopsTable() {
       <td style="font-weight:600">${s.name}</td>
       <td><span class="coord-cell">${s.xCoordinate}</span></td>
       <td><span class="coord-cell">${s.yCoordinate}</span></td>
-      <td><button class="btn btn-outline btn-sm" onclick="pinShop(${s.id})">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
-        Map
-      </button></td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-sm" onclick="pinShop(${s.id})">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+          Map
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteShop(${s.id},'${s.name}')">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete
+        </button>
+      </td>
     </tr>`).join('');
 }
 async function createShop() {

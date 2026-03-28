@@ -69,4 +69,12 @@ public class ShopController {
             throw new ResourceNotFoundException(ex.getMessage());
         }
     }
+
+    // DELETE /shops/{id} — delete a shop
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
+        shopService.deleteShop(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

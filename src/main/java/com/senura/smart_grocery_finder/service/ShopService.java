@@ -188,5 +188,11 @@ public class ShopService {
                 .doubleValue();
     }
 
+    public void deleteShop(Long id) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shop not found with id: " + id));
+        shopRepository.delete(shop);
+    }
+
 
 }
