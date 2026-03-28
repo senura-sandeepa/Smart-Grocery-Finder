@@ -12,6 +12,29 @@ let bucket    = [];       // string[] — item names
 let hlShopId  = null;     // highlighted/selected shop id
 let visitPath = [];       // ordered array of {id,name,x,y} for the path to draw
 
+/* ═══════════════════════ CONFIRM MODAL ═══════════════════════ */
+let confirmCallback = null;
+
+function showConfirm(title, msg, onOk) {
+  confirmCallback = onOk;
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  const modal = document.getElementById('confirm-modal');
+  modal.style.display = 'flex';
+}
+
+function confirmOk() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  if (confirmCallback) confirmCallback();
+  confirmCallback = null;
+}
+
+function confirmCancel() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  confirmCallback = null;
+}
+
+
 /* ═══════════════════════ NAV ═══════════════════════ */
 function nav(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -97,10 +120,18 @@ async function createItem() {
   try { await api('/items',{method:'POST',body:JSON.stringify({name})}); toast(`"${name}" added`,'success'); inp.value=''; inp.focus(); await loadItems(); }
   catch(e){ toast('Failed: '+e.message,'error'); }
 }
-async function deleteItem(id,name) {
-  if (!confirm(`Delete "${name}"?`)) return;
-  try { await api(`/items/${id}`,{method:'DELETE'}); toast(`"${name}" deleted`,'success'); bucket=bucket.filter(b=>b!==name); updateBucketBadge(); await loadItems(); }
-  catch(e){ toast('Delete failed: '+e.message,'error'); }
+
+async function deleteItem(id, name) {
+  showConfirm('Delete Item', `Are you sure you want to delete "${name}"?`, async () => {
+    try {
+      await api(`/items/${id}`, {method:'DELETE'});
+      toast(`"${name}" deleted`, 'success');
+      bucket = bucket.filter(b => b !== name);
+      updateBucketBadge();
+      await loadItems();
+    }
+    catch(e){ toast('Delete failed: '+e.message, 'error'); }
+  });
 }
 
 /* ═══════════════════════ SHOPS ═══════════════════════ */
@@ -112,14 +143,15 @@ async function loadShops() {
 }
 
 async function deleteShop(id, name) {
-  if (!confirm(`Delete "${name}"?`)) return;
-  try {
-    await api(`/shops/${id}`, {method:'DELETE'});
-    toast(`"${name}" deleted`, 'success');
-    await loadShops();
-    renderMap();
-  }
-  catch(e){ toast('Delete failed: '+e.message, 'error'); }
+  showConfirm('Delete Shop', `Are you sure you want to delete "${name}"?`, async () => {
+    try {
+      await api(`/shops/${id}`, {method:'DELETE'});
+      toast(`"${name}" deleted`, 'success');
+      await loadShops();
+      renderMap();
+    }
+    catch(e){ toast('Delete failed: '+e.message, 'error'); }
+  });
 }
 
 function renderShopsTable() {

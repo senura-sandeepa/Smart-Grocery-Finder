@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+
+<div id="confirm-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);align-items:center;justify-content:center">
+    <div style="background:white;border-radius:16px;padding:28px;width:320px;box-shadow:0 20px 60px rgba(0,0,0,0.15)">
+        <div id="confirm-title" style="font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:8px"></div>
+        <div id="confirm-msg" style="font-size:14px;color:#666;margin-bottom:24px"></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+            <button onclick="confirmCancel()" style="padding:8px 18px;border-radius:8px;border:1.5px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;color:#555">Cancel</button>
+            <button id="confirm-ok" onclick="confirmOk()" style="padding:8px 18px;border-radius:8px;border:none;background:#ef4444;color:white;font-size:13px;font-weight:600;cursor:pointer">Delete</button>
+        </div>
+    </div>
+</div>
+
+
 <div class="shell">
 
     <!-- ══ HEADER ══ -->
